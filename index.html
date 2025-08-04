@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROBSINY Cell King Enterprises</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <img src="IMG_20250726_162217.jpg" alt="ROBSINY Cell King Logo" class="logo">
+    <h1>ROBSINY Cell King Enterprises</h1>
+    <p>"THE BEST PHONE CLINIC"</p>
+    <div id="datetime"></div>
+  </header>
+  <nav>
+    <button onclick="location.href='customer.html'">Customer Interface</button>
+    <button onclick="location.href='stock.html'">Stock Management</button>
+  </nav>
+  <script src="script.js"></script>
+  <script>
+    // Display current date and time
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById('datetime').textContent = now.toLocaleString();
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+  </script>
+</body>
+</html>

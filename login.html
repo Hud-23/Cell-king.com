@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - ROBSINY Cell King Enterprises</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Login</h1>
+    <p>Access the Customer Interface and Stock Management.</p>
+  </header>
+  <section>
+    <form id="loginForm">
+      <label for="username">Username:</label>
+      <input type="text" id="username" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" required>
+      <button type="submit">Login</button>
+    </form>
+    <button id="changePinBtn">Change PIN</button>
+  </section>
+  <section id="changePinSection" style="display: none;">
+    <h2>Change PIN</h2>
+    <form id="changePinForm">
+      <label for="oldPin">Old PIN:</label>
+      <input type="password" id="oldPin" required>
+      <label for="newPin">New PIN:</label>
+      <input type="password" id="newPin" required>
+      <button type="submit">Update PIN</button>
+    </form>
+  </section>
+  <script>
+    // Default PIN
+    let currentPin = '170910380097';
+
+    // Login Logic
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username && password === currentPin) {
+        sessionStorage.setItem('loggedIn', 'true');
+        window.location.href = 'customer.html'; // Redirect to Customer Interface
+      } else {
+        alert('Invalid username or PIN');
+      }
+    });
+
+    // Show Change PIN Section
+    document.getElementById('changePinBtn').addEventListener('click', function () {
+      document.getElementById('changePinSection').style.display = 'block';
+    });
+
+    // Change PIN Logic
+    document.getElementById('changePinForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const oldPin = document.getElementById('oldPin').value;
+      const newPin = document.getElementById('newPin').value;
+      if (oldPin === currentPin) {
+        currentPin = newPin;
+        alert('PIN updated successfully!');
+        document.getElementById('changePinSection').style.display = 'none';
+      } else {
+        alert('Incorrect old PIN');
+      }
+    });
+  </script>
+</body>
+</html>

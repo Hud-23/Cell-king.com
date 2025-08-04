@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Management</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Stock Management</h1>
+    <nav>
+      <button onclick="location.href='index.html'">Home</button>
+      <button onclick="location.href='customer.html'">Customer Interface</button>
+    </nav>
+  </header>
+  <main>
+    <form id="stockForm">
+      <label for="screenModel">Screen Model:</label>
+      <input type="text" id="screenModel" required>
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" required>
+      <button type="submit">Add Stock</button>
+    </form>
+    <table id="stockTable">
+      <thead>
+        <tr>
+          <th>Screen Model</th>
+          <th>Quantity</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </main>
+  <script src="script.js"></script>
+  <script>
+    // Stock Management Logic
+    let stock = JSON.parse(localStorage.getItem('stock')) || [];
+
+    function renderStockTable() {
+      const tbody = document.getElementById('stockTable').getElementsByTagName('tbody')[0];
+      tbody.innerHTML = '';
+      stock.forEach((item, index) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).textContent = item.screenModel;
+        row.insertCell(1).textContent = item.quantity;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => {
+          stock.splice(index, 1);
+          localStorage.setItem('stock', JSON.stringify(stock));
+          renderStockTable();
+        };
+        row.insertCell(2).appendChild(deleteBtn);
+      });
+    }
+
+    document.getElementById('stockForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const screenModel = document.getElementById('screenModel').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+
+      stock.push({ screenModel, quantity });
+      localStorage.setItem('stock', JSON.stringify(stock));
+
+      this.reset();
+      renderStockTable();
+    });
+
+    renderStockTable();
+  </script>
+</body>
+</html>

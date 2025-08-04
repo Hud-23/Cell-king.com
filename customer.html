@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Interface</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Customer Interface</h1>
+    <nav>
+      <button onclick="location.href='index.html'">Home</button>
+      <button onclick="location.href='stock.html'">Stock Management</button>
+    </nav>
+  </header>
+  <main>
+    <form id="customerForm">
+      <label for="phoneModel">Phone Model:</label>
+      <input type="text" id="phoneModel" required>
+      <label for="repairType">Repair Type:</label>
+      <select id="repairType" required>
+        <option value="Screen">Screen</option>
+        <option value="Charging Port">Charging Port</option>
+        <option value="Ear Piece">Ear Piece</option>
+        <option value="Mouth Piece">Mouth Piece</option>
+        <option value="Back Glass">Back Glass</option>
+      </select>
+      <label for="price">Price (ZMW):</label>
+      <input type="number" id="price" required>
+      <label for="status">Status:</label>
+      <select id="status" required>
+        <option value="Paid">Paid</option>
+        <option value="Pending">Pending</option>
+      </select>
+      <button type="submit">Add Record</button>
+    </form>
+    <table id="customerTable">
+      <thead>
+        <tr>
+          <th>Phone Model</th>
+          <th>Repair Type</th>
+          <th>Price (ZMW)</th>
+          <th>Availability</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </main>
+  <script src="script.js"></script>
+  <script>
+    let customers = JSON.parse(localStorage.getItem('customers')) || [];
+    let stock = JSON.parse(localStorage.getItem('stock')) || [];
+
+    function checkAvailability(phoneModel) {
+      const item = stock.find(item => item.screenModel === phoneModel);
+      return item && item.quantity > 0 ? 'IN' : 'OUT';
+    }
+
+    function updateStock(phoneModel) {
+      const item = stock.find(item => item.screenModel === phoneModel);
+      if (item && item.quantity > 0) {
+        item.quantity--;
+        localStorage.setItem('stock', JSON.stringify(stock));
+      }
+    }
+
+    function renderCustomerTable() {
+      const tbody = document.getElementById('customerTable').getElementsByTagName('tbody')[0];
+      tbody.innerHTML = '';
+      customers.forEach((customer, index) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).textContent = customer.phoneModel;
+        row.insertCell(1).textContent = customer.repairType;
+        row.insertCell(2).textContent = `ZMW ${customer.price}`;
+        row.insertCell(3).textContent = customer.availability;
+        row.insertCell(4).textContent = customer.status;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => {
+          customers.splice(index, 1);
+          localStorage.setItem('customers', JSON.stringify(customers));
+          renderCustomerTable();
+        };
+        row.insertCell(5).appendChild(deleteBtn);
+      });
+    }
+
+    document.getElementById('customerForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const phoneModel = document.getElementById('phoneModel').value;
+      const repairType = document.getElementById('repairType').value;
+      const price = parseFloat(document.getElementById('price').value);
+      const status = document.getElementById('status').value;
+      const availability = checkAvailability(phoneModel);
+
+      if (repairType === 'Screen' && availability === 'IN') {
+        updateStock(phoneModel);
+      }
+
+      customers.push({ phoneModel, repairType, price, availability, status });
+      localStorage.setItem('customers', JSON.stringify(customers));
+
+      this.reset();
+      renderCustomerTable();
+    });
+
+    renderCustomerTable();
+   
+  </script>
+</body>
+</hml>
